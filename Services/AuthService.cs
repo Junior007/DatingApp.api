@@ -9,16 +9,16 @@ namespace DatingApp.API.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly DataContext _context;
+        private readonly DataContext _dataContext;
 
         public AuthService(DataContext context)
         {
-            this._context = context;
+            this._dataContext = context;
         }
         public async Task<User> Login(string username, string password)
         {
 
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+            var user = await _dataContext.Users.FirstOrDefaultAsync(x => x.Username == username);
 
             if (user == null)
                 return null;
@@ -33,13 +33,21 @@ namespace DatingApp.API.Services
 
         public async Task<User> Register(User user, string password)
         {
+
+
+            user.Username = user.Username.ToLower();
+
+            if (await UserExists(user.Username))
+                throw new Exception("Username already exists");
+
+
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
 
             user.PasswordHash=passwordHash;
             user.PasswordSalt=passwordSalt;
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+            await _dataContext.Users.AddAsync(user);
+            await _dataContext.SaveChangesAsync();
             return user;
         }
        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -67,7 +75,7 @@ namespace DatingApp.API.Services
         }
         public async Task<bool> UserExists(string username)
         {
-            if(await _context.Users.AnyAsync(x=>x.Username==username))
+            if(await _dataContext.Users.AnyAsync(x=>x.Username==username))
                 return true;
             return false;
         }
