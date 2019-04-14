@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using DatingApp.api.Model;
+using DatingApp.API.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace DatingApp.api.Data
+namespace DatingApp.API.Data
 {
     public class DataContext:DbContext
     {

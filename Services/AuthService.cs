@@ -1,16 +1,17 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using DatingApp.api.Model;
+using DatingApp.API.Data;
+using DatingApp.API.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace DatingApp.api.Data
+namespace DatingApp.API.Services
 {
-    public class AuthRepository : IAuthRepository
+    public class AuthService : IAuthService
     {
         private readonly DataContext _context;
 
-        public AuthRepository(DataContext context)
+        public AuthService(DataContext context)
         {
             this._context = context;
         }
@@ -67,8 +68,8 @@ namespace DatingApp.api.Data
         public async Task<bool> UserExists(string username)
         {
             if(await _context.Users.AnyAsync(x=>x.Username==username))
-                return false;
-            return true;
+                return true;
+            return false;
         }
     }
 }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DatingApp.api.Model
+namespace DatingApp.API.Model
 {
 
     public class Blog

@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using DatingApp.api.Data;
+using DatingApp.API.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace DAtingApp.api.Controllers
+namespace DAtingApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
-    {private readonly DataContext _context;
+    {
+        private readonly DataContext _context;
         public ValuesController(DataContext context)
         {
             _context =context;

@@ -1,4 +1,4 @@
-namespace DatingApp.api.Model
+namespace DatingApp.API.Model
 {
     public class User
     {

@@ -4,43 +4,54 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using DatingApp.API.Model;
+using DatingApp.API.Services;
+using DAtingApp.API.Dtos;
 
-namespace DAtingApp.api.Controllers
+namespace DatingApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
-        // GET: api/Auth
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        private readonly IAuthService _repository;
 
-        // GET: api/Auth/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        public AuthController(IAuthService repository)
         {
-            return "value";
+            this._repository = repository;
         }
 
         // POST: api/Auth
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(UserForRegister userForRegister)
         {
-        }
+            //TODO: pasar la lógica al servicio y hacer la llamada a un solo método
+            /* try {
+                User createdUser = await _repository.Register(userToCreate, userpassword);
+                return StatusCode(201);
+            } catch (Exception ex) { 
+                return BadRequest(ex.Message);
+            }*/
 
-        // PUT: api/Auth/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+
+            userForRegister.Username = userForRegister.Username.ToLower();
+
+            if (await _repository.UserExists(userForRegister.Username))
+                return BadRequest("Username already exists");
+
+            User userToCreate = new User
+            {
+                Username = userForRegister.Username,
+                
+            };
+
+            User createdUser = await _repository.Register(userToCreate, userForRegister.Userpassword);
+
+            return StatusCode(201);
+
+
         }
     }
+
 }
