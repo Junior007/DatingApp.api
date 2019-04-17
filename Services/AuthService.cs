@@ -29,6 +29,13 @@ namespace DatingApp.API.Services
             return user;
         }
         //
+        public async Task<bool> UserExists(string username)
+        {
+            if (await _dataContext.Users.AnyAsync(x => x.Username == username))
+                return true;
+            return false;
+        }
+        //
         public async Task<User> Register(User user, string password)
         {
 
@@ -76,12 +83,6 @@ namespace DatingApp.API.Services
 
             return true;
         }
-        //
-        public async Task<bool> UserExists(string username)
-        {
-            if (await _dataContext.Users.AnyAsync(x => x.Username == username))
-                return true;
-            return false;
-        }
+
     }
 }
