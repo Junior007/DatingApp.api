@@ -31,8 +31,8 @@ namespace DatingApp.API.Controllers
         {
 
             //TODO: pasar la lógica al servicio y hacer la llamada a un solo método
-            try
-            {
+            //try
+            //{
                 User userToCreate = new User
                 {
                     Username = userForRegister.Username,
@@ -42,11 +42,11 @@ namespace DatingApp.API.Controllers
                 User createdUser = await _authService.Register(userToCreate, userForRegister.Password);
 
                 return StatusCode(201);
-            }
+            /*}
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }
+            }*/
 
         }
 
@@ -56,8 +56,9 @@ namespace DatingApp.API.Controllers
 
 
 
-            try
-            {
+            //try
+            //{
+                throw new Exception("error en el servidor");
                 //TODO: pasar la lógica al servicio y hacer la llamada a un solo método
                 User user = await _authService.Login(userForLogin.Username.ToLower(), userForLogin.Password);
 
@@ -66,9 +67,9 @@ namespace DatingApp.API.Controllers
 
                 var claims = new[]
                 {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Username),
-            };
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Username),
+                };
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
 
@@ -91,11 +92,12 @@ namespace DatingApp.API.Controllers
                         token = tokenHandler.WriteToken(token)
                     }
                     );
-            }
+            /*}
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
-            }
+                //return BadRequest(ex.Message);
+                return StatusCode(500, ex.Message);
+            }*/
         }
     }
 

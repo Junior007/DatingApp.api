@@ -1,8 +1,11 @@
 ﻿using DatingApp.API.Data;
 using DatingApp.API.Services;
+using DAtingApp.API.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -43,12 +46,30 @@ namespace DatingApp.API
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();  //Envía página descriptiva de los errores
             }
             else
             {
                 //app.UseHsts();
             }
+
+            
+            //Control global de excepciones
+            app.UseExceptionHandler(builder =>
+                {
+                    builder.Run(
+                        async context =>
+                        {
+                            context.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
+                            var error = context.Features.Get<IExceptionHandlerFeature>();
+                            if (error!=null)
+                            {
+                                context.Response.AddApplicationError(error.Error.Message);
+                                await context.Response.WriteAsync(error.Error.Message);
+                            }
+                        });
+                });
+
 
             //app.UseHttpsRedirection();
             //Permite llamadas desde otro dominio
@@ -60,4 +81,3 @@ namespace DatingApp.API
     }
 }
 
-   
