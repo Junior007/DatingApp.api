@@ -31,8 +31,8 @@ namespace DatingApp.API.Controllers
         {
 
             //TODO: pasar la lógica al servicio y hacer la llamada a un solo método
-            //try
-            //{
+            try
+            {
                 User userToCreate = new User
                 {
                     Username = userForRegister.Username,
@@ -42,11 +42,11 @@ namespace DatingApp.API.Controllers
                 User createdUser = await _authService.Register(userToCreate, userForRegister.Password);
 
                 return StatusCode(201);
-            /*}
+            }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }*/
+            }
 
         }
 
@@ -56,9 +56,9 @@ namespace DatingApp.API.Controllers
 
 
 
-            //try
-            //{
-                throw new Exception("error en el servidor");
+            try
+            {
+                //throw new Exception("error en el servidor");
                 //TODO: pasar la lógica al servicio y hacer la llamada a un solo método
                 User user = await _authService.Login(userForLogin.Username.ToLower(), userForLogin.Password);
 
@@ -92,12 +92,12 @@ namespace DatingApp.API.Controllers
                         token = tokenHandler.WriteToken(token)
                     }
                     );
-            /*}
+            }
             catch (Exception ex)
             {
                 //return BadRequest(ex.Message);
                 return StatusCode(500, ex.Message);
-            }*/
+            }
         }
     }
 
