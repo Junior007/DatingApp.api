@@ -1,5 +1,6 @@
 ﻿using DatingApp.API.Data;
 using DatingApp.API.Services;
+using DAtingApp.API.Data;
 using DAtingApp.API.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -23,9 +25,14 @@ namespace DatingApp.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IDatingRepository, DatingRepository>();
             //Habilito el contexto de Entity Framework
             services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            
+            services.AddControllers().AddNewtonsoftJson(op=> { op.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; });
             services.AddCors();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).
                 AddJwtBearer(options =>
@@ -38,22 +45,18 @@ namespace DatingApp.API
                         ValidateAudience = false
                     };
                 });
-            services.AddScoped<IAuthService, AuthService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
-                //app.UseDeveloperExceptionPage();  //Envía página descriptiva de los errores
-            }
-            else
-            {
-                //app.UseHsts();
+                app.UseDeveloperExceptionPage();
             }
 
-            
+
             //Control global de excepciones
             app.UseExceptionHandler(builder =>
                 {
@@ -62,7 +65,7 @@ namespace DatingApp.API
                         {
                             context.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
                             var error = context.Features.Get<IExceptionHandlerFeature>();
-                            if (error!=null)
+                            if (error != null)
                             {
                                 context.Response.AddApplicationError(error.Error.Message);
                                 await context.Response.WriteAsync(error.Error.Message);
@@ -72,11 +75,20 @@ namespace DatingApp.API
 
 
             //app.UseHttpsRedirection();
+            //Habilita la autenticación
+            //app.UseAuthentication();
             //Permite llamadas desde otro dominio
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-            //Habilita la autenticación
+            app.UseRouting();
+
             app.UseAuthentication();
-            app.UseMvc();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
         }
     }
 }

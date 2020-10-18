@@ -12,8 +12,9 @@ using System.Threading.Tasks;
 
 namespace DatingApp.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
+    [Produces("application/json")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -26,7 +27,8 @@ namespace DatingApp.API.Controllers
         }
 
         // POST: api/Auth
-        [HttpPost("register")]
+        [HttpPost]
+        [Route("register")]
         public async Task<IActionResult> Register(UserForRegister userForRegister)
         {
 
@@ -50,7 +52,8 @@ namespace DatingApp.API.Controllers
 
         }
 
-        [HttpPost("login")]
+        [HttpPost]
+        [Route("login")]
         public async Task<IActionResult> Login(UserForLogin userForLogin)
         {
 

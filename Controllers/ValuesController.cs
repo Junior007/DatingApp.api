@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace DAtingApp.API.Controllers
 {
-    [Authorize]
-    [Route("api/[controller]")]
+
     [ApiController]
+    [Route("api/[controller]")]
+    [Produces("application/json")]
     public class ValuesController : ControllerBase
     {
         private readonly DataContext _context;
@@ -25,7 +26,8 @@ namespace DAtingApp.API.Controllers
             return Ok(values);
         }
         //
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("{id}")]
         public async Task<IActionResult> GetValues(int id)
         {
             var value = await _context.Values.FirstOrDefaultAsync(x => x.Id == id);
@@ -39,13 +41,15 @@ namespace DAtingApp.API.Controllers
         }
 
         // PUT api/values/5
-        [HttpPut("{id}")]
+        [HttpPut]
+        [Route("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
         // DELETE api/values/5
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("{id}")]
         public void Delete(int id)
         {
         }
