@@ -9,6 +9,8 @@ using DatingApp.API.Data;
 using DatingApp.API.Model;
 using Microsoft.AspNetCore.Authorization;
 using DAtingApp.API.Data;
+using AutoMapper;
+using DAtingApp.API.Dtos;
 
 namespace DAtingApp.API.Controllers
 {
@@ -19,24 +21,28 @@ namespace DAtingApp.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IDatingRepository _datingRepository;
+        private readonly IMapper _mapper;
 
-        public UsersController(IDatingRepository datingRepository)
+        public UsersController(IDatingRepository datingRepository,IMapper mapper)
         {
             _datingRepository = datingRepository;
+            _mapper= mapper;
         }
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult> GetUsers()
         {
             //var a = User.Identity.Name;
             var users= await _datingRepository.Users();
-            return Ok(users);
+
+            var userForList=_mapper.Map<IEnumerable<UserForList>>(users);
+            return Ok(userForList);
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult> GetUser(int id)
         {
             var user = await _datingRepository.User(id);
 
@@ -45,7 +51,9 @@ namespace DAtingApp.API.Controllers
                 return NotFound();
             }
 
-            return Ok(user);
+
+            var UserForDetailed =_mapper.Map<UserForDetailed>(user);
+            return Ok(UserForDetailed);
         }
 
         // PUT: api/Users/5
@@ -84,7 +92,7 @@ namespace DAtingApp.API.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult> PostUser(User user)
         {
             //_context.Users.Add(user);
             //await _context.SaveChangesAsync();
@@ -97,7 +105,7 @@ namespace DAtingApp.API.Controllers
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(int id)
+        public async Task<ActionResult> DeleteUser(int id)
         {
             var user = await _datingRepository.User(id);
             if (user == null)
@@ -107,8 +115,9 @@ namespace DAtingApp.API.Controllers
 
             _datingRepository.Delete<User>(user);
             await _datingRepository.SaveAll();
+            var UserForDetailed = _mapper.Map<UserForDetailed>(user);
 
-            return user;
+            return Ok(UserForDetailed);
         }
 
         private bool UserExists(int id)

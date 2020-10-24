@@ -1,4 +1,5 @@
-﻿using DatingApp.API.Data;
+﻿using AutoMapper;
+using DatingApp.API.Data;
 using DatingApp.API.Services;
 using DAtingApp.API.Data;
 using DAtingApp.API.Helpers;
@@ -25,8 +26,9 @@ namespace DatingApp.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-
+            //AutoMapper
+            services.AddAutoMapper(typeof(DatingRepository).Assembly);
+            //
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IDatingRepository, DatingRepository>();
             //Habilito el contexto de Entity Framework
