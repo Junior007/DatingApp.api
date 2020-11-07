@@ -8,17 +8,24 @@ using System.Threading.Tasks;
 
 namespace DAtingApp.API.Helpers
 {
-    public class AutoMapperProfile : Profile
+    public class AutoMapperProfiles : Profile
     {
-        public  AutoMapperProfile()
+        public  AutoMapperProfiles()
         {
+
+            // OUT
             CreateMap<User, UserForDetailed>()
                 .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.IsMain).Url))
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalculatedAge()));
+
             CreateMap<User, UserForList>()
                 .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => src.Photos.FirstOrDefault(p => p.IsMain).Url))
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalculatedAge()));
+
             CreateMap<Photo, PhotoForDetailed>();
+
+            // IN
+            CreateMap<UserForUpdate, User>();
 
         }
     }

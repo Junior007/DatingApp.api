@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using DAtingApp.API.Data;
 using AutoMapper;
 using DAtingApp.API.Dtos;
+using System.Security.Claims;
 
 namespace DAtingApp.API.Controllers
 {
@@ -23,10 +24,10 @@ namespace DAtingApp.API.Controllers
         private readonly IDatingRepository _datingRepository;
         private readonly IMapper _mapper;
 
-        public UsersController(IDatingRepository datingRepository,IMapper mapper)
+        public UsersController(IDatingRepository datingRepository, IMapper mapper)
         {
             _datingRepository = datingRepository;
-            _mapper= mapper;
+            _mapper = mapper;
         }
 
         // GET: api/Users
@@ -34,9 +35,9 @@ namespace DAtingApp.API.Controllers
         public async Task<ActionResult> GetUsers()
         {
             //var a = User.Identity.Name;
-            var users= await _datingRepository.Users();
+            var users = await _datingRepository.Users();
 
-            var userForList=_mapper.Map<IEnumerable<UserForList>>(users);
+            var userForList = _mapper.Map<IEnumerable<UserForList>>(users);
             return Ok(userForList);
         }
 
@@ -52,7 +53,7 @@ namespace DAtingApp.API.Controllers
             }
 
 
-            var UserForDetailed =_mapper.Map<UserForDetailed>(user);
+            var UserForDetailed = _mapper.Map<UserForDetailed>(user);
             return Ok(UserForDetailed);
         }
 
@@ -60,13 +61,21 @@ namespace DAtingApp.API.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<IActionResult> PutUser(int id, UserForUpdate userForUpdate)
         {
-            if (id != user.Id)
+            if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
             {
-                return BadRequest();
+                return Unauthorized();
             }
 
+            var user = await _datingRepository.User(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(userForUpdate, user);
             //_context.Entry(user).State = EntityState.Modified;
             _datingRepository.Update<User>(user);
             try
@@ -75,14 +84,7 @@ namespace DAtingApp.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
             return NoContent();
