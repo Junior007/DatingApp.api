@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DAtingApp.API.Data
+namespace DatingApp.API.Data
 {
     public interface IDatingRepository
     {
@@ -15,6 +15,8 @@ namespace DAtingApp.API.Data
         Task<IEnumerable<User>> Users();
         Task<User> User(int id);
         bool UserExists(int id);
+        Task<Photo> GetPhoto(int id);
+        Task<Photo> GetMainPhotoForUser(int userId);
         /*<IEnumerable<T>> Get<T>() where T : class;
 Task<T> GetAll<T>() where T : class;*/
     }

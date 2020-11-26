@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
-namespace DAtingApp.API.Controllers
+namespace DatingApp.API.Controllers
 {
 
     [ApiController]

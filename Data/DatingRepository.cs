@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DAtingApp.API.Data
+namespace DatingApp.API.Data
 {
     public class DatingRepository : IDatingRepository
     {
@@ -48,6 +48,16 @@ namespace DAtingApp.API.Data
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<Photo> GetPhoto(int id)
+        {
+            var photo = await _context.Photos.FirstOrDefaultAsync(u => u.Id == id);
+            return photo;
+        }
 
+        public async  Task<Photo> GetMainPhotoForUser(int userId)
+        {
+            var photo = await _context.Photos.Where(u => u.UserId == userId).FirstOrDefaultAsync(ph=>ph.IsMain);
+            return photo;
+        }
     }
 }

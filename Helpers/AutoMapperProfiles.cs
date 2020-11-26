@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using DatingApp.API.Model;
-using DAtingApp.API.Dtos;
+using DatingApp.API.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DAtingApp.API.Helpers
+namespace DatingApp.API.Helpers
 {
     public class AutoMapperProfiles : Profile
     {
@@ -23,9 +23,10 @@ namespace DAtingApp.API.Helpers
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalculatedAge()));
 
             CreateMap<Photo, PhotoForDetailed>();
-
+            CreateMap<Photo, PhotoForReturn>();
             // IN
             CreateMap<UserForUpdate, User>();
+            CreateMap<PhotoForCreation, Photo>();
 
         }
     }

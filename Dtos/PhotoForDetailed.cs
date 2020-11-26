@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DAtingApp.API.Dtos
+namespace DatingApp.API.Dtos
 {
     public class PhotoForDetailed
     {

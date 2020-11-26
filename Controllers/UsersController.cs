@@ -8,12 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using DatingApp.API.Data;
 using DatingApp.API.Model;
 using Microsoft.AspNetCore.Authorization;
-using DAtingApp.API.Data;
 using AutoMapper;
-using DAtingApp.API.Dtos;
+using DatingApp.API.Dtos;
 using System.Security.Claims;
 
-namespace DAtingApp.API.Controllers
+namespace DatingApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
